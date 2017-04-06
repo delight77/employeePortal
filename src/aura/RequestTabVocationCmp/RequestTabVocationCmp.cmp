@@ -1,0 +1,113 @@
+<aura:component controller="RequestEmployeePortalController" implements="force:appHostable">
+    <ltng:require scripts="{!$Resource.jQuery_pkl}" />
+    <aura:handler event="c:ChoiceRequestFromSelectEvt" action="{!c.getChoiceRequestFromEvent}" />
+    <aura:attribute name="GetChoiceRequest" type="String" />
+    <aura:attribute name="yearStart" type="Date"/>
+    <aura:attribute name="yearEnd" type="Date"/>
+    <aura:attribute name="daysAccruedYid" type="String"/>
+    <aura:attribute name="spentYid" type="String"/>
+    <aura:attribute name="remainingYid" type="String"/>
+    <aura:attribute name="detailsDefaultVacation" type="String"/>
+    <aura:attribute name="daysVacation" type="String"/>
+    <aura:attribute name="remainingVacDaysAftAppr" type="String"/>
+    <aura:attribute name="paidVrbl" type="Boolean"/>
+
+    <div id="vacation-container" style="display: none">
+        <form class="slds-form--staked">
+            <div id="userVacationInfo">
+                <div class="slds-panel__section slds-has-divider--bottom">
+                    <fieldset class="slds-form-element">
+                        <h3 class="slds-text-heading--medium slds-m-bottom--medium">Vacation request</h3>
+                        <p>Vacation year start : {!v.yearStart}</p>
+                        <p>Vacation year end : {!v.yearEnd}</p>
+                        <p>Days Accrued YID : {!v.daysAccruedYid}</p>
+                        <p>Spent YID : {!v.spentYid}</p>
+                        <p>Remaining YID : {!v.remainingYid}</p> 
+                    </fieldset>
+                </div>
+                <div aura:id="divError"></div>
+                <div class="slds-panel__section slds-has-divider--bottom">
+                    <form class="slds-form--inline">
+                        <label class="slds-form-element__label" for="dateStartVocation">Vacation start</label>
+                        <div class="slds-form-element">
+                            <ui:inputDate aura:id="dateStartVocation" value="" displayDatePicker="true"/>
+                        </div>
+                        <label class="slds-form-element__label" for="dateEndVocation">Vacation end</label>
+                        <div class="slds-form-element">
+                            <ui:inputDate aura:id="dateEndVocation" value="" displayDatePicker="true"/>
+                        </div>
+                        <label class="slds-checkbox__label" for="paid">
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label">Paid</span>
+                        </label>
+                        <div class="slds-form-element">
+                            <ui:inputCheckbox aura:id="paid" value=""/>    
+                        </div>
+                    </form>
+                </div>
+                <div class="slds-panel__section slds-has-divider--bottom">
+                    <h3 class="slds-text-heading--small">Replacement</h3>
+                    <div aura:id="replacement-container">
+                        {!v.body}
+                    </div>
+                    
+                </div>
+                <div class="slds-panel__section slds-has-divider--bottom">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <ui:inputTextArea aura:id="detail" value="{!v.detailsDefaultVacation}" placeholder="(Optional)" cols="80" rows="8" click="{!c.getDetailDefaultVacation}"/>
+                        </div>
+                    </div>
+                    <form class="slds-form--inline">
+                        <div class="slds-form-element">   
+                            <div class="slds-form-element__control"> 
+                                <ui:button label="Submit" class="slds-button slds-button--brand" press="{!c.submitApproveVacation}"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">   
+                            <div class="slds-form-element__control"> 
+                                <ui:button label="Cancel" class="slds-button slds-button--brand" press="{!c.cancel}"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="afterSubmit" style="display: none">
+                <div class="slds-panel__section slds-has-divider--bottom">
+                    <div aura:id="divMessage"></div>
+                    <div class="slds-panel__section slds-has-divider--bottom">
+                        <fieldset class="slds-form-element">
+                            <h3 class="slds-text-heading--small slds-m-bottom--medium">Details:</h3>
+                            <p>Vacation year start : {!v.yearStart}</p>
+                            <p>Vacation year end : {!v.yearEnd}</p>
+                            <p>Vacation days : {!v.daysVacation}</p>
+                            <p>Remaining vacation days after approval : {!v.remainingVacDaysAftAppr}</p> 
+                            <label class="slds-checkbox__label" for="paid">
+                                <span class="slds-checkbox--faux"></span>
+                                <span class="slds-form-element__label">Paid</span>
+                            </label>
+                            <div class="slds-form-element">
+                                <ui:inputCheckbox aura:id="paidAftSbmt" value="{!v.paidVrbl}"/>    
+                            </div>
+                            <p>{!v.detailsDefaultVacation}</p>
+                        </fieldset>
+                    </div>
+                    <div class="slds-panel__section slds-has-divider--bottom">
+                        <form class="slds-form--inline">
+                            <div class="slds-form-element">   
+                                <div class="slds-form-element__control"> 
+                                    <ui:button label="Recall request" class="slds-button slds-button--brand" press="{!c.submitApproveVacation}"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">   
+                                <div class="slds-form-element__control"> 
+                                    <ui:button label="Back to Home" class="slds-button slds-button--brand" press="{!c.backToHome}"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</aura:component>

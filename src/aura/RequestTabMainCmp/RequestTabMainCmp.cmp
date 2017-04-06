@@ -1,0 +1,104 @@
+<aura:component controller="RequestEmployeePortalController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId">
+    <ltng:require scripts="{!$Resource.jQuery_pkl}" />
+    <aura:registerEvent name="ChoiceObjectName" type="c:ChoiceRequestFromSelectEvt" />
+    <aura:handler event="c:GetApproveListEvt" action="{!c.getApprovalListFromEvent}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!-- APPROVAL PART -->
+    <aura:attribute name="approvalList" type="object"/>
+    <aura:attribute name="vacationLabel" type="String"/>
+    <aura:attribute name="sickLabel" type="String"/>
+    <aura:attribute name="helpdeskLabel" type="String"/>
+
+    
+
+    <div id="main-page">
+        <div class="slds-panel__section slds-has-divider--bottom">
+            <form class="slds-form--inline">    
+                <div class="slds-form-element" > 
+                    <div aura:id="Sick-List-container" class="show">  
+                        <div class="slds-app-launcher">
+                            <div class="slds-app-launcher__tile">
+                                <div class="slds-app-launcher__tile-figure">
+                                    <div class="slds-form-element__control" aura:id="Sick-List"></div>
+                                </div>
+                                <div class="slds-app-launcher__tile-body"><div class="slds-text-color--blue">{!v.sickLabel}</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element">  
+                    <div aura:id="Vacation-container" class="show"> 
+                        <div class="slds-app-launcher">
+                            <div class="slds-app-launcher__tile">
+                                <div class="slds-app-launcher__tile-figure">
+                                    <div class="slds-form-element__control" aura:id="Vacation"></div>
+                                </div>
+                                <div class="slds-app-launcher__tile-body"><div class="slds-text-color--blue">{!v.vacationLabel}</div></div>
+                            </div>                        
+                        </div> 
+                    </div>
+                </div>  
+               
+                <div class="slds-form-element"> 
+                    <div aura:id="Helpdesk-container" class="show">  
+                        <div class="slds-app-launcher">
+                            <div class="slds-app-launcher__tile">
+                                <div class="slds-app-launcher__tile-figure">
+                                    <div class="slds-form-element__control" aura:id="Helpdesk"></div>
+                                </div>
+                                <div class="slds-app-launcher__tile-body"><div class="slds-text-color--blue">{!v.helpdeskLabel}</div></div>
+                            </div>   
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- APPROVAL PART -->
+
+        <!-- WRAPPER DIV -->  
+       <div class="wk_static">  
+         <!-- BODY -->  
+         <!-- <div class="slds-scrollable" style="height: 300px;">   -->
+            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">  
+                <thead>  
+                    <tr class="slds-text-title--caps">  
+                        <th scope="col" >  
+                            <div class="slds-truncate" title="Date">Date</div>  
+                        </th>  
+                        <th scope="col" >  
+                            <div class="slds-truncate" title="Status">Status</div>  
+                        </th>  
+                        <th scope="col" >  
+                            <div class="slds-truncate" title="Assigned To">Assigned To</div>  
+                        </th>  
+                        <th scope="col" >  
+                            <div class="slds-truncate" title="Approver">Approver</div>  
+                        </th> 
+                    </tr>  
+                </thead>  
+                <tbody>  
+                    <aura:iteration items="{!v.approvalList.approvals}" var="appRec">   
+                        <aura:iteration items="{!appRec.listOfSteps}" var="step">  
+                            <tr>  
+                                <td data-label="Date">  
+                                    <div class="slds-truncate" title="Date">{!step.createdDateStr}</div>  
+                                </td>  
+                                <td data-label="Status">  
+                                    <div class="slds-truncate" title="Status">{!step.steps}</div>  
+                                </td>  
+                                <td data-label="Assigned To">  
+                                    <div class="slds-truncate" title="Assigned To">{!step.assignedTo}</div>  
+                                </td>  
+                                <td data-label="Approver">  
+                                    <div class="slds-truncate" title="Approver">{!step.actorName}</div>  
+                                </td>                               
+                            </tr>  
+                        </aura:iteration>  
+                    </aura:iteration>   
+                </tbody>  
+            </table>  
+        </div>  
+    </div>
+</aura:component>

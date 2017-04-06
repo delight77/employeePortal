@@ -1,0 +1,41 @@
+<aura:component controller="ProjectsController" implements="forceCommunity:availableForAllPageTypes" >
+
+    <aura:handler name="clientEvent" event="c:ProjectsGetClientEvent" action="{!c.getEvent}"/>
+    <!-- attributes -->
+    <aura:attribute access="private" name="projectsAll" type="NEW_Project__c[]"/>
+    <aura:attribute access="private" name="projectsChoosed" type="NEW_Project__c[]"/>
+    <aura:attribute access="private" name="clientsAll" type="NEW_Client__c[]"/>
+    <!-- <aura:attribute access="private" name="selectedClient" type="NEW_Client__c"/> -->
+    <!-- <aura:attribute access="private" name="textForSearch" type="String" default=""/> -->
+
+    <!-- handler -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+
+    <c:ProjectSearchCmpt clientsAll="{!v.clientsAll}" />
+    <div>Project Main component</div>
+
+    <div>
+        <aura:iteration items="{!v.projectsChoosed}" var="project">
+                <article class="slds-card slds-card--narrow">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2>
+                                    <a class="slds-card__header-link slds-truncate">
+                                        <span class="slds-text-heading--small">{!project.Name}</span>
+                                    </a>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body">
+                        <div>Client: {!project.Customer__r.Account__r.Name}</div>
+                        <div>Project manager: {!project.Account_Manager__r.Name}</div>
+                    </div>
+                </article>
+        </aura:iteration>
+    </div>
+    <lightning:spinner aura:id="loadSpinner" size="large" alternativeText="Waiting response from server"/>
+
+</aura:component>

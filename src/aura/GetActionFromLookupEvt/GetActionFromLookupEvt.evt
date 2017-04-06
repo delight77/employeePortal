@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="userByEvent" type="User"/>
+    <aura:attribute name="typeUser" type="String"/>
+</aura:event>

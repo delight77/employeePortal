@@ -1,0 +1,200 @@
+<aura:component controller="RequestEmployeePortalController" implements="force:appHostable">
+    <ltng:require scripts="{!join(',', 
+        $Resource.jQuery_pkl
+    )}"/>
+
+    <aura:handler event="c:ChoiceRequestFromSelectEvt" action="{!c.getChoiceRequestProjectAccessFromEvent}" />
+    <aura:handler name="oSelectedUserEvent" event="c:SelectedUserEvt" action="{!c.handleComponentEvent}"/>
+    <aura:handler event="c:GetActionFromLookupEvt" action="{!c.handleComponentEventFromLookup}"/>
+    <aura:registerEvent name="ClearCustomLookupAfterCancelEvt" type="c:ClearCustomLookupAfterCancelEvt"/>
+
+    <aura:attribute name="detailsDefaultHelpdesk" type="String"/>
+    <aura:attribute name="detailsDefaultHelpdeskEmpl" type="String"/>
+    <aura:attribute name="detailsDefaultHelpdeskBlockEmpl" type="String"/>
+    <aura:attribute name="detailsHelpdeskNewProjectV" type="String"/>
+    
+    
+    <aura:attribute name="detailsAfterSubmit" type="String"/>
+
+    <aura:attribute name="jiraKey" type="String" />
+    <aura:attribute name="projectMultiple" type="String[]" />
+
+    <aura:attribute name="inputFirstName" type="String" />
+    <aura:attribute name="inputLastName" type="String" />
+    <aura:attribute name="teamTempoMultiple" type="String[]" />
+
+    <aura:attribute name="typeRequestHelpdesk" type="String" />
+    <aura:attribute name="projectManagerUser" type="User"/>
+    <aura:attribute name="accountManagerUser" type="User"/>
+    <aura:attribute name="currentUser" type="String"/>
+
+    <div id="helpdesk-container" style="display: none">                         
+        <form class="slds-form--staked">
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <h3 class="slds-text-heading--small slds-m-bottom--medium">Helpdesk request</h3>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="selectRequestType">Select request type: </label>
+                        <div class="slds-form-element__control">
+                            <ui:inputSelect class="slds-select" aura:id="selectRequestType" change="{!c.getInfForRequestType}"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element" id="cancel_init">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Cancel" class="slds-button slds-button--brand" press="{!c.cancelInit}"/>
+                        </div>
+                    </div>   
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom" id="helpdeskAccessPart" style="display: none">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="inputSelectProject">Project</label>
+                    <div class="slds-form-element__control">
+                        <ui:inputSelect class="slds-select" aura:id="inputSelectProject" change="{!c.getProjectAttribute}"/>
+                    </div>
+                </div>
+                <c:CustomLookupCmp />
+
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <ui:inputTextArea aura:id="detailHelpdesk" value="{!v.detailsDefaultHelpdesk}" label="Details:" cols="80" rows="10"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom" id="new_project" style="display: none">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="inputSelectProject">Project Name</label>
+                    <div class="slds-form-element__control">
+                        <ui:inputText placeholder="Project Name" aura:id="inputSelectNewProject" click="{!c.getProjectAttribute}"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <c:CustomLookupForReplacementCmp outputId="projectManager" LabelForSelect="Project manager" typeUserEvt="ProjectManager"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <c:CustomLookupForReplacementCmp outputId="accountManager" LabelForSelect="Account manager" typeUserEvt="AccountManager"/>
+                    </div>
+                </div>
+                
+                <c:CustomLookupCmp />
+
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <ui:inputTextArea aura:id="detailHelpdeskNewProject" value="{!v.detailsHelpdeskNewProjectV}" label="Details:" cols="80" rows="10"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">   
+                <div class="slds-form-element__control"> 
+                    {!v.body}
+                </div>
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom" id="add_employee" style="display: none">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="firstName">First Name</label>
+                    <div class="slds-form-element__control">
+                        <ui:inputText aura:id="firstName" placeholder="First Name" value="{!v.inputFirstName}"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="lastName">Last Name</label>
+                    <div class="slds-form-element__control">
+                        <ui:inputText aura:id="lastName" class="slds-input" placeholder="Last Name" value="{!v.inputLastName}"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="dateStartEmployee">Date of employment</label>
+                    <ui:inputDate aura:id="dateStartEmployee" value="" displayDatePicker="true"/>
+                </div>
+                <div class="slds-form-element"> 
+                    <label class="slds-form-element__label" for="inputSelectProjectMult">Projects</label>
+                    <div class="slds-select_container">
+                        <ui:inputSelect multiple="true" class="multiple" aura:id="inputSelectProjectMult" change="{!c.onMultiSelectProjectChange}"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                <label class="slds-form-element__label" for="selectAccountTeam">Select team for email </label>
+                    <div class="slds-form-element__control">
+                        <ui:inputSelect class="slds-select" aura:id="selectAccountTeam"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    
+                    <label class="slds-form-element__label" for="selectAccountTeamTempo">Select team for tempo</label>
+                    <div class="slds-select_container">
+                        <ui:inputSelect multiple="true" class="multiple" aura:id="selectAccountTeamTempo" change="{!c.onMultiSelectTeamChange}">
+                            
+                        </ui:inputSelect>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                <label class="slds-form-element__label" for="selectRole">Select role: </label>
+                    <div class="slds-form-element__control">
+                        <ui:inputSelect class="slds-select" aura:id="selectRole"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <ui:inputTextArea aura:id="detailHelpdeskEmpl" value="{!v.detailsDefaultHelpdeskEmpl}" label="Details:" cols="80" rows="10" click="{!c.getDetailHelpdeskEmpl}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom" id="block_employee" style="display: none">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <c:CustomLookupForReplacementCmp outputId="blockUser" outputClass="blockUserClass" LabelForSelect="Block user"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="dateBlockEmployee">Date/Time of block employment</label>
+                    <ui:inputDateTime aura:id="dateBlockEmployee" value="" displayDatePicker="true"/>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <ui:inputTextArea aura:id="detailHelpdeskBlockEmpl" value="{!v.detailsDefaultHelpdeskBlockEmpl}" label="Details:" cols="80" rows="5" click="{!c.getDetailHelpdeskBlockEmpl}"/>
+                    </div>
+                </div>  
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom" id="group_buttons" style="display: none">
+                <form class="slds-form--inline" >
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Submit" class="slds-button slds-button--brand" press="{!c.submitHelpdesk}"/>
+                        </div> 
+                    </div>
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Cancel" class="slds-button slds-button--brand" press="{!c.cancelHelpdesk}"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </form>
+    </div>
+    <div id="afterSubmitHelpdesk" style="display: none">
+        <div class="slds-panel__section slds-has-divider--bottom">
+            <div aura:id="divMessageHelpdesk"></div>
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <fieldset class="slds-form-element">
+                    <h3 class="slds-text-heading--small slds-m-bottom--medium">Details:</h3>
+                    <ui:outputText value="{!v.detailsAfterSubmit}" />
+                </fieldset>
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <form class="slds-form--inline">
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Recall request" class="slds-button slds-button--brand" press="{!c.submitHelpdesk}"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Back to Home" class="slds-button slds-button--brand" press="{!c.backToHomeHelpdesk}"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</aura:component>

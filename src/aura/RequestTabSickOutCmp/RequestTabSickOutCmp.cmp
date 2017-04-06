@@ -1,0 +1,68 @@
+<aura:component controller="RequestEmployeePortalController" implements="force:appHostable">
+    <ltng:require scripts="{!$Resource.jQuery_pkl}" />
+    <aura:handler event="c:ChoiceRequestFromSelectEvt" action="{!c.getChoiceRequestSickOutFromEvent}" />
+    <aura:attribute name="detailsDefaultSick" type="String"/>
+    <aura:attribute name="GetChoiceRequest" type="String" />
+    <div id="sick-container" style="display: none">
+        <form class="slds-form--staked">
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <h3 class="slds-text-heading--small slds-m-bottom--medium">Sick list</h3>
+                <form class="slds-form--inline">
+                    <label class="slds-form-element__label" for="dateStartVocation">Start date</label>
+                    <div class="slds-form-element">
+                        <ui:inputDate aura:id="dateStart" value="" displayDatePicker="true"/>
+                    </div>
+                    <label class="slds-form-element__label" for="dateEndVocation">End date</label>
+                    <div class="slds-form-element">
+                        <ui:inputDate aura:id="dateEnd" value="" displayDatePicker="true"/>
+                    </div>
+                </form>
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <ui:inputTextArea aura:id="detailSick" value="{!v.detailsDefaultSick}" placeholder="(Optional)" label="Details:" cols="80" rows="5" click="{!c.getDetailSickListDefault}"/>
+                    </div>
+                </div>
+                <form class="slds-form--inline">
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Submit" class="slds-button slds-button--brand" press="{!c.submitSickListMain}"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Cancel" class="slds-button slds-button--brand" press="{!c.cancelSick}"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </form>
+    </div>
+    <div id="afterSubmitSick" style="display: none">
+        <div class="slds-panel__section slds-has-divider--bottom">
+            <div aura:id="divMessageSick"></div>
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <fieldset class="slds-form-element">
+                    <h3 class="slds-text-heading--small slds-m-bottom--medium">Details:</h3>
+                    <ui:outputText value="{!v.detailsDefaultSick}" />
+                </fieldset>
+            </div>
+            <div class="slds-panel__section slds-has-divider--bottom">
+                <form class="slds-form--inline">
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Recall request" class="slds-button slds-button--brand" press="{!c.submitSickListMain}"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">   
+                        <div class="slds-form-element__control"> 
+                            <ui:button label="Back to Home" class="slds-button slds-button--brand" press="{!c.cancelSick}"/>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+                </div>
+        </div>
+</aura:component>

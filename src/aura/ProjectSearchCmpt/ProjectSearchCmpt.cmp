@@ -1,0 +1,28 @@
+<aura:component >
+
+    <aura:attribute access="public" name="clientsAll" type="NEW_Client__c[]"/>
+    <aura:attribute access="private" name="clientsChoosed" type="NEW_Client__c[]"/>
+    <aura:attribute access="private" name="textForSearch" type="String" default=""/>
+
+    <aura:registerEvent name="getClient" type="c:ProjectsGetClientEvent"/>
+
+    <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open">
+        <div>
+            <ui:inputText aura:id="search"  placeholder="Search..." value="{!v.textForSearch}" keyup="{!c.startSearching}" updateOn="keyup" />
+        </div>
+        <div aura:id="blockResult" class="slds-hide">
+            <div class="slds-dropdown slds-dropdown--left">
+                <ul class="slds-dropdown__list" role="menu">
+                    <aura:iteration items="{!v.clientsChoosed}" var="client" indexVar="key" >
+                        <li class="slds-dropdown__item" role="presentation">
+                            <a role="menuitem" tabindex="0" aura:id="clientsList" onclick="{!c.clickClient}" data-key="{!key}" data-client="{!client}">
+                                <span class="slds-truncate">{!client.Account__r.Name}</span>
+                            </a>
+                        </li>
+                    </aura:iteration>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</aura:component>

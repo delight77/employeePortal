@@ -1,0 +1,14 @@
+<aura:component >
+    <aura:attribute name="oUser" type="User" />
+    <!--Register the component level event-->
+    <aura:registerEvent name="oSelectedUserEvent" type="c:SelectedUserEvt"/>
+    <li role="presentation">
+        <span class="slds-lookup__item-action slds-media slds-media--center" id="lookup-option-350" role="option">
+            <div class="slds-media__body">             
+                <div class="slds-lookup__result-text">
+                    <ui:outputText value="{!v.oUser.Name}" click="{!c.selectUser}"/>
+                </div>
+            </div>    
+        </span>
+    </li>
+</aura:component>

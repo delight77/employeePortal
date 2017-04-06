@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,forceCommunity:availableForAllPageTypes" access="global">
+	<div class="slds-panel slds-grid slds-grid--vertical slds-nowrap">
+  		<div class="slds-form--stacked slds-grow slds-scrollable--y">
+			<c:RequestTabMainCmp />
+			<c:RequestTabVocationCmp />
+			<c:RequestTabSickOutCmp />
+			<c:RequestTabHelpdeskCmp />
+		</div>
+	</div>
+</aura:component>
