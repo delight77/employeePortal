@@ -23,12 +23,18 @@
         var dateStartVocation = component.find('dateStartVocation').get("v.value");
         var dateEndVocation = component.find('dateEndVocation').get("v.value");
         var replacementText = '';
+        var projectUserMap = {};
+        
         $('.outputUserName').each(function() {
             var valueForProject = $(this).val();
-            if (valueForProject === '') {
+            if (valueForProject !== '') {
+                projectUserMap[$(this).attr('id')] = valueForProject;
+            }
+            else {
                 valueForProject = 'N/A';
             }
             replacementText += $(this).attr('id') + ': ' + valueForProject + '\n';
+            
         });
         var paid = component.find('paid').get('v.value');
         var dateStart = new Date (dateStartVocation);
@@ -43,12 +49,15 @@
         }
         var defaultText = 'Здравствуйте,\nпредоставьте, пожалуйста, ' + isPaidText + ' отпуск на ' + daysVacation + ' д' + '.\n\n' + 'В моё отсутствие замена на проектах:\n' + replacementText + '\nЗаранее благодарю.' ;
         component.set("v.detailsDefaultVacation", defaultText);
+        
+        component.set("v.projectUserMap", projectUserMap);
     },
     submitApproveVacation : function(component, event, helper) {
         var dateStartVocation = component.find('dateStartVocation').get("v.value");
         var dateEndVocation = component.find('dateEndVocation').get("v.value");
         var paid = component.find('paid').get("v.value");
         var detail = component.find('detail').get("v.value");
+        var projectUsers = component.get("v.projectUserMap");
         try {
             var submitApproveVar = component.get("c.submitApprove");
 
@@ -57,7 +66,8 @@
                     "vacationStartDate": dateStartVocation,
                     "vacationEndDate": dateEndVocation,
                     "details" : detail,
-                    "paid" : paid
+                    "paid" : paid,
+                    "projectUsers" : projectUsers
                 }
             );
             submitApproveVar.setCallback(this, function(response) {

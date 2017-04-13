@@ -8,7 +8,8 @@ trigger Request on Request__c (before update, after update, before insert, after
         handler.handleRequestCreateTasks(trigger.New, trigger.OldMap, trigger.isUpdate);
     } else if (Trigger.isAfter) {
         handler.handleRequestCallApprovalProccess(trigger.New, trigger.OldMap);
-        handler.handleRequestSalaryChangeCreateTasks(trigger.New, trigger.isUpdate);    
+        handler.handleRequestSalaryChangeCreateTasks(trigger.New, trigger.isUpdate);   
+        handler.handleUpdateResourceReplacement(trigger.New, trigger.isUpdate);
         handler.handleRequestCreateShares(trigger.New, trigger.Old, trigger.isUpdate, trigger.isInsert);
     }
 }

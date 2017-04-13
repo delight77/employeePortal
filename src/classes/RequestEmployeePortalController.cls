@@ -141,7 +141,8 @@ public with sharing class RequestEmployeePortalController {
     }
 
     @AuraEnabled
-    public static String submitApprove(String vacationStartDate, String vacationEndDate, String details, Boolean paid) {
+    public static String submitApprove(String vacationStartDate, String vacationEndDate, String details, Boolean paid, Map<String,String> projectUsers) {
+        List<NEW_Project_Replacement_Resource__c> projectReplResources = new List<NEW_Project_Replacement_Resource__c>();
         Id recordId = getRecordTypeId('Request__c', 'Vacation');
         User currentLoggedInUser = getLoggedUser();
         Contact currentContact = [SELECT Id FROM Contact WHERE Employee_User__c = :currentLoggedInUser.Id LIMIT 1];
@@ -166,6 +167,26 @@ public with sharing class RequestEmployeePortalController {
             Count_Real_Approval__c = 0
         );
         insert newRequestVacation;
+
+        for (String projectName : projectUsers.keySet()) {
+            String userName = projectUsers.get(projectName);
+            User userForReplacement = [SELECT Id FROM User WHERE Name = :userName LIMIT 1];
+            NEW_Project__c projectForReplacement = [SELECT Id FROM NEW_Project__c WHERE Name = :projectName];
+
+            NEW_Project_Replacement_Resource__c newProjectResourcesReplacement = new NEW_Project_Replacement_Resource__c (
+                Name = 'Project replacement',
+                Project__c = projectForReplacement.Id,
+                User__c = userForReplacement.Id,
+                Request__c = newRequestVacation.Id,
+                Status__c = 'Wait',
+                Description__c = projectName + ' - ' + userName
+            );
+            projectReplResources.add(newProjectResourcesReplacement);
+
+        }
+        System.debug(projectReplResources);
+        insert projectReplResources;
+
         List<NEW_Project__c> projects = [
             SELECT Id, Project_Manager__c  
             FROM NEW_Project__c

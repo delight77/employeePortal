@@ -281,6 +281,22 @@ public with sharing class RequestHandler {
 	    }
     }
 
+    public void handleUpdateResourceReplacement(List<Request__c> requests, Boolean isUpdate) {
+        List<NEW_Project_Replacement_Resource__c> resultReplacements = new List<NEW_Project_Replacement_Resource__c>();
+        for (Request__c rq : requests) {
+            if (rq.RecordTypeId == requestRecordTypesMap.get('Vacation') && rq.Status__c == 'Completed' && isUpdate) {
+                for (NEW_Project_Replacement_Resource__c projectReplResource : [SELECT Id, Status__c FROM NEW_Project_Replacement_Resource__c WHERE Request__c = :rq.Id]) {
+                    projectReplResource.Status__c = 'Ready';
+                    resultReplacements.add(projectReplResource);
+                }
+            }    
+        }
+
+        if (!resultReplacements.isEmpty()) {
+            Database.Update(resultReplacements);
+        }
+    }
+
     public void handleRequestSalaryChangeCreateTasks(List<Request__c> requests, Boolean isUpdate) {
     	List<Task> tasksPAForUpsert = new List<Task>();
 		for (Request__c rq : requests) {
